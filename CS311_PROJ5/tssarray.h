@@ -4,7 +4,7 @@
 //
 // For CS 311 Fall 2019
 // Header for class TSSArray
-// Some functions provided by Dr. Chappell
+// Some functions provided by Dr. Chappell in SSArray Class
 
 
 #ifndef FILE_TSSARRAY_H_INCLUDED
@@ -13,37 +13,42 @@
 #include <algorithm>	// For std::max
 
 // *********************************************************************
-// class SSArray - Class definition
+// class TSSArray - Class definition
 // *********************************************************************
-// class SSArray
-// Seriously Smart Array of int.
+// class TSSArray
+// Templated Seriously Smart Array
 // Resizable, copyable/movable, exception-safe.
 // Invariants:
 //     0 <= _size <= _capacity.
 //     _data points to an array of int, allocated with new[], owned by
-//      *this, holding _size ints -- UNLESS _capacity == 0, which case
+//      *this, holding _size templated type -- UNLESS _capacity == 0, which case
 //      _data may be nullptr.
+// Requirements on types:
+//		dctor, move ctor, and move assignment must not throw
+template <typename T>
 class TSSArray {
 
 
-	// ***** SSArray: types *****
+	// ***** TSSArray: types *****
 public:
 	// value_type: type of data items
-	using value_type = int;
+	using value_type = T;
+
 	// size_type: type of sizes & indices
 	using size_type = std::size_t;
+
 	// iterator, const_iterator: random-access iterator types
 	using iterator = value_type*;
 	using const_iterator = const value_type*;
 
 
-	// ***** SSArray: internal-use constants *****
+	// ***** TSSArray: internal-use constants *****
 private:
 	// Capacity of default-constructed object
 	enum { DEFAULT_CAP = 16 };
 
 
-	// ***** SSArray: ctors, op=, dctor
+	// ***** TSSArray: ctors, op=, dctor
 public:
 	// Default ctor & ctor from size
 	// Strong Guarantee
@@ -61,7 +66,15 @@ public:
 		_size(other._size),
 		_data(new value_type[other._capacity])
 	{
-		std::copy(other.begin(), other.end(), begin());
+		try
+		{
+			std::copy(other.begin(), other.end(), begin());
+		}
+		catch (...)
+		{
+			delete[] _data;
+			throw;
+		}
 	}
 
 	// Move ctor
@@ -87,20 +100,25 @@ public:
 	// ??? Guarantee
 	TSSArray& operator=(const TSSArray& other)
 	{
-		// TODO: WRITE THIS!!!
-		return *this; // DUMMY
+		if (this == &other)
+			return *this;
+		TSSArray copy_of_other(other);
+		swap(copy_of_other);
+		return *this;
 	}
 
 	// Move assignment
 	// No-Throw Guarantee
 	TSSArray& operator=(TSSArray&& other) noexcept
 	{
-		// TODO: WRITE THIS!!!
-		return *this; // DUMMY
+		if (this == &other) // Check for self-assignment
+			return *this;
+		swap(other);
+		return *this;
 	}
 
 
-	// ***** SSArray: general public operators *****
+	// ***** TSSArray: general public operators *****
 public:
 	// Operator[] - non-const & const
 	// No-Throw Guarantee
@@ -114,10 +132,11 @@ public:
 	}
 
 
-	// ***** SSArray: general public functions *****
+	// ***** TSSArray: general public functions *****
 public:
 	// size
 	// No-Throw Guarantee
+	// Exception neutral
 	size_type size() const noexcept
 	{
 		return _size;
@@ -125,6 +144,7 @@ public:
 
 	// empty
 	// No-Throw Guarantee
+	// Exception neutral
 	bool empty() const noexcept
 	{
 		return size() == 0;
@@ -132,6 +152,7 @@ public:
 
 	// begin - non-const & const
 	// No-Throw Guarantee
+	// Exception neutral
 	iterator begin() noexcept
 	{
 		return _data;
@@ -143,6 +164,7 @@ public:
 
 	// end - non-const & const
 	// No-Throw Guarantee
+	// Exception neutral
 	iterator end() noexcept
 	{
 		return begin() + size();
@@ -154,6 +176,7 @@ public:
 
 	// resize
 	// ??? Guarantee
+	// Exception neutral
 	void resize(size_type newsize)
 	{
 		// TODO: WRITE THIS!!!
@@ -161,6 +184,7 @@ public:
 
 	// insert
 	// ??? Guarantee
+	// Exception neutral
 	iterator insert(iterator pos,
 		const value_type& item)
 	{
@@ -171,6 +195,7 @@ public:
 
 	// erase
 	// ??? Guarantee
+	// Exception neutral
 	iterator erase(iterator pos)
 	{
 		// TODO: WRITE THIS!!!
@@ -178,29 +203,40 @@ public:
 	}
 
 	// push_back
-	// ??? Guarantee
-	void push_back(value_type item)
+	// InsertEnd operation.
+	// Strong Guarantee
+	// Exception neutral
+	void push_back(const value_type& item)
 	{
 		insert(end(), item);
 	}
 	// pop_back
-	// ??? Guarantee
+	// Pre:
+	//     _size > 0.
+	// Strong Guarantee
+	// Exception neutral
 	void pop_back()
 	{
 		erase(end() - 1);
 	}
+
 	// swap
 	// No-Throw Guarantee
+	// Exception neutral
 	void swap(TSSArray& other) noexcept
 	{
-		// TODO: WRITE THIS!!!
+		std::swap(_capacity, other._capacity);
+		std::swap(_size, other._size);
+		std::swap(_data, other._data);
 	}
 
 
-	// ***** SSArray: data members *****
+	// ***** TSSArray: data members *****
 private:
 	size_type	_capacity;  // Size of our allocated array
 	size_type	_size;      // Size of client's data
 	value_type*	_data;      // Pointer to our array
-};  // End class SSArray
+
+};  // End class TSSArray
+
 #endif //#ifndef FILE_TSSARRAY_H_INCLUDED
