@@ -52,6 +52,9 @@ private:
 public:
 	// Default ctor & ctor from size
 	// Strong Guarantee
+	// Pre:
+	//	size >= 0
+	// Exception neutral
 	explicit TSSArray(size_type size = 0)
 		:_capacity(std::max(size, size_type(DEFAULT_CAP))),
 		// _capacity must be declared before _data
@@ -61,6 +64,7 @@ public:
 
 	// Copy ctor
 	// Strong Guarantee
+	// Exception neutral
 	TSSArray(const TSSArray& other)
 		:_capacity(other._capacity),
 		_size(other._size),
@@ -79,6 +83,7 @@ public:
 
 	// Move ctor
 	// No-Throw Guarantee
+	// Exception neutral
 	TSSArray(TSSArray&& other) noexcept
 		:_capacity(other._capacity),
 		_size(other._size),
@@ -91,17 +96,17 @@ public:
 
 	// Dctor
 	// No-Throw Guarantee
+	// Exception neutral
 	~TSSArray()
 	{
 		delete[] _data;
 	}
 
 	// Copy assignment
-	// ??? Guarantee
+	// Strong Guarantee
+	// Exception neutral
 	TSSArray& operator=(const TSSArray& other)
 	{
-		if (this == &other)
-			return *this;
 		TSSArray copy_of_other(other);
 		swap(copy_of_other);
 		return *this;
@@ -109,10 +114,9 @@ public:
 
 	// Move assignment
 	// No-Throw Guarantee
+	// Exception neutral
 	TSSArray& operator=(TSSArray&& other) noexcept
 	{
-		if (this == &other) // Check for self-assignment
-			return *this;
 		swap(other);
 		return *this;
 	}
@@ -175,7 +179,7 @@ public:
 	}
 
 	// resize
-	// ??? Guarantee
+	// Strong Guarantee
 	// Exception neutral
 	void resize(size_type newsize)
 	{
@@ -183,7 +187,7 @@ public:
 	}
 
 	// insert
-	// ??? Guarantee
+	// Basic Guarantee
 	// Exception neutral
 	iterator insert(iterator pos,
 		const value_type& item)
@@ -194,17 +198,20 @@ public:
 
 
 	// erase
-	// ??? Guarantee
+	// Pre:
+	//	pos is a valid iterator (begin() <= pos <= end())
+	// Basic Guarantee
 	// Exception neutral
 	iterator erase(iterator pos)
 	{
-		// TODO: WRITE THIS!!!
-		return begin();  // DUMMY
+		std::rotate(pos, pos + 1, end()); // moves pos element to end
+		resize(size() - 1);
+		return pos;
 	}
 
 	// push_back
 	// InsertEnd operation.
-	// Strong Guarantee
+	// Basic Guarantee
 	// Exception neutral
 	void push_back(const value_type& item)
 	{
