@@ -334,3 +334,5 @@ ASALocalRun/
 /CS311_PROJ3
 /CS311_PROJ2
 /CS311_PROJ1
+*.vcxproj
+*.vcxprojfilters

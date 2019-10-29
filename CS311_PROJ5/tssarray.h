@@ -179,7 +179,7 @@ public:
 	// Exception neutral
 	void resize(size_type newsize)
 	{
-		// TODO: WRITE THIS!!!
+		
 	}
 
 	// insert
