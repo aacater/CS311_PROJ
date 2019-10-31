@@ -1,5 +1,5 @@
 // tssarray.h
-// Alex Cater
+// Alex Cater, Crhis Seamount, Kurt Nunn
 // 2019-10-31
 //
 // For CS 311 Fall 2019
@@ -183,7 +183,26 @@ public:
 	// Exception neutral
 	void resize(size_type newsize)
 	{
-		
+		// if new size > current size, must do reallocate-and-copy
+		if(_capacity <= newsize)
+		{
+			value_type* new_arr;
+			new_arr = new value_type[newsize];	
+			for (int i = 0; i < _capacity; i++)
+			{
+				new_arr[i] = _data[i];
+			}
+			_capacity = newsize;
+			for (int i = 0; i < _capacity; i++)
+			{
+				_data[i] = new_arr[i];
+			}
+			delete [] new_arr;
+		}
+		else
+		{
+			_capacity = newsize;
+		}
 	}
 
 	// insert
@@ -193,6 +212,7 @@ public:
 		const value_type& item)
 	{
 		// TODO: WRITE THIS!!!
+		// might need to do reallocate-and-copy
 		return begin();  // DUMMY
 	}
 
