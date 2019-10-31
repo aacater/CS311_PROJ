@@ -186,22 +186,26 @@ public:
 		// if new size > current size, must do reallocate-and-copy
 		if(_capacity <= newsize)
 		{
+			size_type newCap = std::max(std::max(newsize,_capacity*2), size_type(DEFAULT_CAP));
 			value_type* new_arr;
-			new_arr = new value_type[newsize];	
-			for (int i = 0; i < _capacity; i++)
+			new_arr = new value_type[newCap];	
+			try
 			{
-				new_arr[i] = _data[i];
+				std::copy(begin(), end(), new_arr);
 			}
-			_capacity = newsize;
-			for (int i = 0; i < _capacity; i++)
+			catch (...)
 			{
-				_data[i] = new_arr[i];
+				delete[] new_arr;
+				throw;
 			}
-			delete [] new_arr;
+			std::swap(_data, new_arr);
+			std::swap(_capacity, newCap);
+			std::swap(_size, newsize);
+			delete[] new_arr;
 		}
 		else
 		{
-			_capacity = newsize;
+			_size = newsize;
 		}
 	}
 
@@ -211,9 +215,11 @@ public:
 	iterator insert(iterator pos,
 		const value_type& item)
 	{
-		// TODO: WRITE THIS!!!
-		// might need to do reallocate-and-copy
-		return begin();  // DUMMY
+		auto itr = pos - begin();
+		resize(size() + 1);
+		_data[size() - 1] = item;
+		std::rotate(begin() + itr, end()-1, end()); // moves pos element to end
+		return begin() + itr;
 	}
 
 
@@ -224,9 +230,10 @@ public:
 	// Exception neutral
 	iterator erase(iterator pos)
 	{
-		std::rotate(pos, pos + 1, end()); // moves pos element to end
+		auto itr = pos - begin();
+		std::rotate(begin() + itr, begin() + itr + 1, end()); // moves pos element to end
 		resize(size() - 1);
-		return pos;
+		return begin() + itr;
 	}
 
 	// push_back
