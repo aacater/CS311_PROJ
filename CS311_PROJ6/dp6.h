@@ -30,11 +30,13 @@ void reverseList(unique_ptr<LLNode2<ValType>>& head)
     {
        while (pn != lim)
 	    {
-	        std::swap(p->_data, pn->_data);
-	        p = p->next.get();
+	    //    std::swap(p->_data, pn->_data);
+	    //    p = p->next.get();
 	        pn = pn->_next.get();
 	    }
-	    lim = p;
+	    lim = pn;
+	    std::swap(p->_data, pn->_data);
+	    p = p->next.get();
 	    --counter;
 	}
     cout << endl;
