@@ -37,7 +37,7 @@ void reverseList(unique_ptr<LLNode2<ValType>>& head)
 	    lim = pn;
 	    std::swap(p->_data, pn->_data);
 	    p = p->next.get();
-	    pn = p->next.get();
+	    pn = p;
 	    --counter;
 	}
     cout << endl;
