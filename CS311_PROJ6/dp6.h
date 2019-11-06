@@ -10,7 +10,7 @@
 #define FILE_DP6_H_INCLUDED
 
 #include <cstddef> // For std::size_t
-#include <memory> // For std::shared_ptr, std::make_shared
+#include <memory> // For std::unique, std::make_unique
 #include <utility> // For std::pair, std::make_pair
 #include "llnode2.h"
 
@@ -55,7 +55,7 @@ public:
 	using key_type = KType;	// Type of keys.
 	using value_type = VType;	// Type of associated values.
 	using kv_type = std::pair<key_type, value_type>;	// Type of key-value pairs.
-	//using node_type = LLNode2<kv_type>;	// Type of list nodes.
+	using node_type = LLNode2<kv_type>;	// Type of list nodes.
 	using size_type = std::size_t;	// Type of list size.
 
 	// LLMap: Default ctor and the Big Five
@@ -177,24 +177,10 @@ public:
 		// TODO
 	}
 
-	// LLMap: Private member functions
-private:
-
-	// lookup
-	// If the list contains the given key, return a pointer to the node that
-	// contains the key-value pair. Otherwise return an empty pointer.
-	//
-	// Strong Guarantee
-	// Exception neutral
-	std::unique_ptr<LLNode2<kv_type>> lookup(key_type key) const
-	{
-		// TODO
-	}
-
 	// LLMap: Private data members
 private:
-	std::unique_ptr<LLNode2<kv_type>> _head;
+	std::unique_ptr<node_type> _head;
 
 };  // End class template LLMap
 
-#endif  // #ifndef FILE_DP6_H_INCLUDED
+#endif //#ifndef FILE_DP6_H_INCLUDED
