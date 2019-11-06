@@ -124,17 +124,25 @@ public:
 	// Exception neutral
 	value_type* find(key_type key)
 	{
-		// TODO
-		value_type temp = value_type();
-		value_type* test = &temp;
-		return test;
+		auto p = _head.get();  // Iterates through list
+		while (p != nullptr)
+		{
+			if (p->_data.first == key)
+				return &p->_data.second;
+			p = p->_next.get();
+		}
+		return nullptr;
 	}
 	const value_type* find(key_type key) const
 	{
-		// TODO
-		const value_type temp = value_type();
-		const value_type * test = &temp;
-		return test;
+		auto p = _head.get();  // Iterates through list
+		while (p != nullptr)
+		{
+			if (p->_data.first == key)
+				return &p->_data.second;
+			p = p->_next.get();
+		}
+		return nullptr;
 	}
 
 	// insert
