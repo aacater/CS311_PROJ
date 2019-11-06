@@ -24,16 +24,18 @@ void reverseList(unique_ptr<LLNode2<ValType>>& head)
 	// TODO
     auto p = head.get();
     auto pn = p->_next.get();
-    size_t counter = 0;
-    while (counter < size(head))
+    auto counter = size(head));
+    auto lim = nullptr;
+    while (counter > 1)
     {
-       while (p != nullptr)
+       while (pn != lim)
 	    {
 	        std::swap(p->_data, pn->_data);
 	        p = p->next.get();
 	        pn = pn->_next.get();
 	    }
-	    ++counter;
+	    lim = p;
+	    --counter;
 	}
     cout << endl;
 }
