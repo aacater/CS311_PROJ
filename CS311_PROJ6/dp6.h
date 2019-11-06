@@ -40,7 +40,6 @@ void reverseList(unique_ptr<LLNode2<ValType>>& head)
 	    pn = p;
 	    --counter;
 	}
-    cout << endl;
 }
 
 
