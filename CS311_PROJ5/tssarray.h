@@ -1,5 +1,5 @@
 // tssarray.h
-// Alex Cater, Kurt Nunn, Chris Seamount
+// Alex Cater, Chris Seamount, Kurt Nunn
 // 2019-10-31
 //
 // For CS 311 Fall 2019
@@ -51,9 +51,9 @@ private:
 	// ***** TSSArray: ctors, op=, dctor
 public:
 	// Default ctor & ctor from size
-	// Strong Guarantee
 	// Pre:
 	//	size >= 0
+	// Strong Guarantee
 	// Exception neutral
 	explicit TSSArray(size_type size = 0)
 		:_capacity(std::max(size, size_type(DEFAULT_CAP))),
@@ -63,6 +63,8 @@ public:
 	{}
 
 	// Copy ctor
+	// Pre:
+	//	none.
 	// Strong Guarantee
 	// Exception neutral
 	TSSArray(const TSSArray& other)
@@ -82,6 +84,8 @@ public:
 	}
 
 	// Move ctor
+	// Pre:
+	//	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	TSSArray(TSSArray&& other) noexcept
@@ -103,6 +107,8 @@ public:
 	}
 
 	// Copy assignment
+	// Pre:
+	//	none.
 	// Strong Guarantee
 	// Exception neutral
 	TSSArray& operator=(const TSSArray& other)
@@ -113,6 +119,8 @@ public:
 	}
 
 	// Move assignment
+	// Pre:
+	//	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	TSSArray& operator=(TSSArray&& other) noexcept
@@ -125,8 +133,9 @@ public:
 	// ***** TSSArray: general public operators *****
 public:
 	// Operator[] - non-const & const
+	// Pre:
+	//	index must be non-negative and within the array bounds.
 	// No-Throw Guarantee
-	// Exception neutral
 	value_type& operator[](size_type index) noexcept
 	{
 		return _data[index];
@@ -140,6 +149,8 @@ public:
 	// ***** TSSArray: general public functions *****
 public:
 	// size
+	// Pre:
+	//	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	size_type size() const noexcept
@@ -148,6 +159,8 @@ public:
 	}
 
 	// empty
+	// Pre:
+	//	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	bool empty() const noexcept
@@ -156,6 +169,8 @@ public:
 	}
 
 	// begin - non-const & const
+	// Pre:
+	//	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	iterator begin() noexcept
@@ -168,6 +183,8 @@ public:
 	}
 
 	// end - non-const & const
+	// Pre:
+	//	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	iterator end() noexcept
@@ -180,18 +197,18 @@ public:
 	}
 
 	// resize
-	// Strong Guarantee
 	// Pre:
-	//	newsize >= 0
+	//	newsize must be non-negative.
+	// Strong Guarantee
 	// Exception neutral
 	void resize(size_type newsize)
 	{
 		// if new size > current size, must do reallocate-and-copy
-		if (_capacity <= newsize)
+		if(_capacity < newsize)
 		{
-			size_type newCap = std::max(std::max(newsize, _capacity * 2), size_type(DEFAULT_CAP));
+			size_type newCap = std::max(std::max(newsize,_capacity*2), size_type(DEFAULT_CAP));
 			value_type* new_arr;
-			new_arr = new value_type[newCap];
+			new_arr = new value_type[newCap];	
 			try
 			{
 				std::copy(begin(), end(), new_arr);
@@ -213,9 +230,9 @@ public:
 	}
 
 	// insert
-	// Basic Guarantee
 	// Pre:
-	//	pos is a valid iterator (begin() <= pos <= end())
+	//	pos is a valid iterator position inside the array (begin() <= pos <= end())
+	// Basic Guarantee
 	// Exception neutral
 	iterator insert(iterator pos,
 		const value_type& item)
@@ -223,25 +240,27 @@ public:
 		auto itr = pos - begin();
 		resize(size() + 1);
 		_data[size() - 1] = item;
-		std::rotate(begin() + itr, end() - 1, end());
+		std::rotate(begin() + itr, end()-1, end()); // moves pos element to end
 		return begin() + itr;
 	}
 
 
 	// erase
 	// Pre:
-	//	pos is a valid iterator (begin() <= pos <= end())
+	//	pos is a valid iterator position inside the array (begin() <= pos <= end())
 	// Basic Guarantee
 	// Exception neutral
 	iterator erase(iterator pos)
 	{
 		auto itr = pos - begin();
-		std::rotate(begin() + itr, begin() + itr + 1, end());
+		std::rotate(begin() + itr, begin() + itr + 1, end()); // moves pos element to end
 		resize(size() - 1);
 		return begin() + itr;
 	}
 
 	// push_back
+	// Pre:
+	//	none.
 	// InsertEnd operation.
 	// Basic Guarantee
 	// Exception neutral
@@ -260,6 +279,8 @@ public:
 	}
 
 	// swap
+	// Pre:
+	// 	none.
 	// No-Throw Guarantee
 	// Exception neutral
 	void swap(TSSArray& other) noexcept
