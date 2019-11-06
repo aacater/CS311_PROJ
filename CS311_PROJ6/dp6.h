@@ -153,7 +153,15 @@ public:
 	// Exception neutral
 	void insert(key_type key, value_type value)
 	{
-		// TODO
+		value_type* val_loc = find(key);
+
+		if (val_loc) {
+			*val_loc = value;
+		}
+		else {
+			//_head = move(make_unique<node_type>(std::make_pair(key, value), _head));
+			
+		}
 	}
 
 	// erase
