@@ -123,7 +123,7 @@ public:
 	// Exception neutral
 	value_type* find(key_type key)
 	{
-		auto node = lookup(key);
+		auto node = getNode(key);
 		if (node)
 		{
 			return &(node->_data.second);
@@ -132,7 +132,7 @@ public:
 	}
 	const value_type* find(key_type key) const
 	{
-		auto node = lookup(key);
+		auto node = getNode(key);
 		if (node)
 		{
 			return &(node->_data.second);
@@ -154,8 +154,7 @@ public:
 			*val_loc = value;
 		}
 		else {
-			//_head = move(make_unique<node_type>(std::make_pair(key, value), _head));
-			
+			_head = std::make_unique<node_type>(std::make_pair(key, value), _head);
 		}
 	}
 
@@ -191,16 +190,16 @@ public:
 	// ListMap: Private member functions
 private:
 
-	// lookup
+	// getNode
 	// If the list contains the given key, return a pointer to the node that
 	// contains the key-value pair. Otherwise return an empty pointer.
 	//
 	// Strong Guarantee
-	// Exception neutral, does not throw additional exceptions.
-	node_type* lookup(key_type key) const {
+	// Exception neutral
+	node_type* getNode(key_type key) const {
 		auto current = _head.get();
 		while (current) {
-			if (current->_data.first == key)
+			//if (current._data.first == key)
 				return current;
 			current = current->_next.get();
 		}
