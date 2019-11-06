@@ -54,8 +54,8 @@ class LLMap {
 public:
 	using key_type = KType;	// Type of keys.
 	using value_type = VType;	// Type of associated values.
-	using kv_type = std::pair<key_type, value_type>;	// Type of key-value pairs.
-	using node_type = LLNode2<kv_type>;	// Type of list nodes.
+	using kvpair_type = std::pair<key_type, value_type>;	// Type of key-value pairs.
+	using node_type = LLNode2<kvpair_type>;	// Type of list nodes.
 	using size_type = std::size_t;	// Type of list size.
 
 	// LLMap: Default ctor and the Big Five
@@ -83,7 +83,6 @@ public:
 	LLMap(LLMap&& other) = delete;
 	LLMap& operator=(const LLMap& other) = delete;
 	LLMap& operator=(LLMap&& other) = delete;
-
 
 	// LLMap: General public member functions
 public:
@@ -124,23 +123,19 @@ public:
 	// Exception neutral
 	value_type* find(key_type key)
 	{
-		auto p = _head.get();  // Iterates through list
-		while (p != nullptr)
+		auto node = lookup(key);
+		if (node)
 		{
-			if (p->_data.first == key)
-				return &p->_data.second;
-			p = p->_next.get();
+			return &(node->_data.second);
 		}
 		return nullptr;
 	}
 	const value_type* find(key_type key) const
 	{
-		auto p = _head.get();  // Iterates through list
-		while (p != nullptr)
+		auto node = lookup(key);
+		if (node)
 		{
-			if (p->_data.first == key)
-				return &p->_data.second;
-			p = p->_next.get();
+			return &(node->_data.second);
 		}
 		return nullptr;
 	}
@@ -193,6 +188,24 @@ public:
 		// TODO
 	}
 
+	// ListMap: Private member functions
+private:
+
+	// lookup
+	// If the list contains the given key, return a pointer to the node that
+	// contains the key-value pair. Otherwise return an empty pointer.
+	//
+	// Strong Guarantee
+	// Exception neutral, does not throw additional exceptions.
+	node_type* lookup(key_type key) const {
+		auto current = _head.get();
+		while (current) {
+			if (current->_data.first == key)
+				return current;
+			current = current->_next.get();
+		}
+		return current;
+	}
 	// LLMap: Private data members
 private:
 	std::unique_ptr<node_type> _head;
