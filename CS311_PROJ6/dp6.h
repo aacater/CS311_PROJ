@@ -194,7 +194,12 @@ public:
 	template <typename Func>
 	void traverse(Func f)
 	{
-		// TODO
+		auto p = _head.get();
+		while (p)
+		{
+			f(p->_data.first, p->_data.second);
+			p = p->_next.get();
+		}
 	}
 
 	// ListMap: Private member functions
