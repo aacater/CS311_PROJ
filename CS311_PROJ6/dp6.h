@@ -176,7 +176,13 @@ public:
 	// Exception neutral
 	void erase(key_type key)
 	{
-		// TODO
+		if (_head) {
+			if (_head->_data.first == key)
+				_head = move(_head->_next);
+			else {
+				// TODO
+			}
+		}
 	}
 
 	// traverse
@@ -214,7 +220,7 @@ private:
 	node_type* getNode(key_type key) const {
 		auto current = _head.get();
 		while (current) {
-			//if (current._data.first == key)
+			//if (current->_data.first == key)
 				return current;
 			current = current->_next.get();
 		}
