@@ -21,25 +21,17 @@
 template<typename ValType>
 void reverseList(unique_ptr<LLNode2<ValType>>& head)
 {
-	// TODO
-    auto p = head.get();
-    auto pn = p;
-    auto counter = size(head));
-    auto lim = nullptr;
-    while (counter > 1)
-    {
-       while (pn != lim)
-	    {
-	    //    std::swap(p->_data, pn->_data);
-	    //    p = p->next.get();
-	        pn = pn->_next.get();
-	    }
-	    lim = pn;
-	    std::swap(p->_data, pn->_data);
-	    p = p->next.get();
-	    pn = p;
-	    --counter;
+	std::unique_ptr<LLNode2<ValType>> newHead = nullptr;
+	std::unique_ptr<LLNode2<ValType>> tempHead = nullptr;
+	while (head)
+	{
+		tempHead = std::move(head->_next);
+		// 3 pointer rotate
+		head->_next = std::move(newHead);
+		newHead = std::move(head);
+		head = std::move(tempHead);
 	}
+	head = std::move(newHead);
 }
 
 
