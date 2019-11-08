@@ -1,10 +1,9 @@
 // dp6.h
-// Alex Cater
+// Alex Cater, Chris Seamount, Kurt Nunn
 // 2019-11-07
 //
 // For CS 311 Fall 2019
 // Header for Project 6 code
-
 
 #ifndef FILE_DP6_H_INCLUDED
 #define FILE_DP6_H_INCLUDED
@@ -15,8 +14,7 @@
 #include "llnode2.h"
 
 // reverseList
-// Reverse a linked list; in-place, linear time, and performs no value type
-// operations.
+// Reverse a linked list; in-place, linear time, and using only pointer manipulation
 // Exception neutral
 template<typename ValType>
 void reverseList(unique_ptr<LLNode2<ValType>>& head)
@@ -26,14 +24,12 @@ void reverseList(unique_ptr<LLNode2<ValType>>& head)
 	while (head)
 	{
 		tempHead = std::move(head->_next);
-		// 3 pointer rotate
 		head->_next = std::move(newHead);
 		newHead = std::move(head);
 		head = std::move(tempHead);
 	}
 	head = std::move(newHead);
 }
-
 
 // ============================================================================
 // class template LLMap
@@ -56,7 +52,6 @@ void reverseList(unique_ptr<LLNode2<ValType>>& head)
 // - Each node in the list stores a key-value pair whose key type is key_type
 //   and whose value type is value_type.
 // - Each key in the list appears only once.
-// - 0 <= number of nodes <= maximum value for type size_type.
 template <typename KType, typename VType>
 class LLMap {
 
@@ -133,19 +128,27 @@ public:
 	// Exception neutral
 	value_type* find(key_type key)
 	{
-		auto node = getNode(key);
-		if (node)
+		auto p = _head.get();  // Iterates through list
+		while (p)
 		{
-			return &(node->_data.second);
+			if (p->_data.first == key)
+			{
+				return &(p->_data.second);
+			}
+			p = p->_next.get();
 		}
 		return nullptr;
 	}
 	const value_type* find(key_type key) const
 	{
-		auto node = getNode(key);
-		if (node)
+		auto p = _head.get();  // Iterates through list
+		while (p)
 		{
-			return &(node->_data.second);
+			if (p->_data.first == key)
+			{
+				return &(p->_data.second);
+			}
+			p = p->_next.get();
 		}
 		return nullptr;
 	}
@@ -158,12 +161,14 @@ public:
 	// Exception neutral
 	void insert(key_type key, value_type value)
 	{
-		value_type* val_loc = find(key);
+		auto val_loc = find(key);
 
-		if (val_loc) {
+		if (val_loc)
+		{
 			*val_loc = value;
 		}
-		else {
+		else
+		{
 			_head = std::make_unique<node_type>(std::make_pair(key, value), _head);
 		}
 	}
@@ -176,10 +181,14 @@ public:
 	// Exception neutral
 	void erase(key_type key)
 	{
-		if (_head) {
+		if (_head) 
+		{
 			if (_head->_data.first == key)
-				_head = move(_head->_next);
-			else {
+			{
+				_head = std::move(_head->_next);
+			}
+			else 
+			{
 				// TODO
 			}
 		}
@@ -208,24 +217,6 @@ public:
 		}
 	}
 
-	// ListMap: Private member functions
-private:
-
-	// getNode
-	// If the list contains the given key, return a pointer to the node that
-	// contains the key-value pair. Otherwise return an empty pointer.
-	//
-	// Strong Guarantee
-	// Exception neutral
-	node_type* getNode(key_type key) const {
-		auto current = _head.get();
-		while (current) {
-			//if (current->_data.first == key)
-				return current;
-			current = current->_next.get();
-		}
-		return current;
-	}
 	// LLMap: Private data members
 private:
 	std::unique_ptr<node_type> _head;
