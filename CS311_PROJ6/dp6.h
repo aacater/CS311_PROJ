@@ -181,17 +181,29 @@ public:
 	// Exception neutral
 	void erase(key_type key)
 	{
-		if (_head) 
+		node_type* temp = nullptr;
+		auto p = _head.get();  // Iterates through list
+
+		if (p != nullptr && p->_data.first == key)
 		{
-			if (_head->_data.first == key)
-			{
-				_head = std::move(_head->_next);
-			}
-			else 
-			{
-				// TODO
-			}
+			_head = std::move(p->_next);
+			return;
 		}
+
+		temp = p;
+		p = p->_next.get();
+
+		while (p)
+		{
+			if (p->_data.first == key)
+			{
+				temp->_next = std::move(p->_next);
+				return;
+			}
+			temp = p;
+			p = p->_next.get();
+		}
+		return;
 	}
 
 	// traverse
