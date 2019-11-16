@@ -1,6 +1,6 @@
 // treesort.h
 // Alex Cater, Kurt Nunn, Christopher Seamount
-// 2019-11-10
+// 2019-11-15
 //
 // For CS 311 Fall 2019
 // Header for function template treesort
@@ -18,8 +18,7 @@
 #include <iterator>
 // For std::distance
 #include <memory>
-
-#include<iostream>
+// For std::unique_ptr
 
 template<typename ValType>
 struct BSTNode
@@ -56,6 +55,16 @@ void treesort(FDIter first, FDIter last)
 
 	inorder(head, first);
 }
+
+// inorder
+// DEF HERE
+// Pre:
+//     ???
+// Requirements on Types:
+//     ???
+// Exception safety guarantee:
+//     ???
+// exception ????
 template<typename ValType, typename FDIter>
 void inorder(std::unique_ptr<BSTNode<ValType>>& node, FDIter &loc)
 {
@@ -68,6 +77,15 @@ void inorder(std::unique_ptr<BSTNode<ValType>>& node, FDIter &loc)
 	
 }
 
+// insert
+// DEF HERE
+// Pre:
+//     ???
+// Requirements on Types:
+//     ???
+// Exception safety guarantee:
+//     ???
+// exception ????
 template<typename ValType>
 void insert(std::unique_ptr<BSTNode<ValType>>& node, const ValType& key)
 {
