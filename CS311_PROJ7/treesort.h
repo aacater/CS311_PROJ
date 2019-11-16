@@ -19,45 +19,17 @@
 // For std::distance
 #include <memory>
 
-template<typename T>
-class BinarySearchTree
+#include<iostream>
+
+template<typename ValType>
+struct BSTNode
 {
-private:
-	struct BSTNode
-	{
-		T key;
-		
-		std::unique_ptr<BSTNode> _parent;
-		std::unique_ptr<BSTNode> _leftChild;
-		std::unique_ptr<BSTNode> _rightChild;
-	};
+	ValType _key;
 
-private:
-	std::unique_ptr<BSTNode> _root;
+	std::unique_ptr<BSTNode> _left;
+	std::unique_ptr<BSTNode> _right;
 
-public:
-	BinarySearchTree() {}
-	~BinarySearchTree() = default;
-
-	BinarySearchTree(const BinarySearchTree & other) = default;
-	BinarySearchTree(BinarySearchTree && other) = default;
-	BinarySearchTree& operator=(const BinarySearchTree & other) = default;
-	BinarySearchTree& operator=(BinarySearchTree && other) = default;
-
-	void inorder()
-	{
-
-	}
-
-	void insert(T val)
-	{
-		if (_root == nullptr)
-		{
-			
-		}
-		
-	}
-
+	BSTNode(ValType key) : _left(nullptr), _right(nullptr), _key(key) {}
 };
 
 // treesort
@@ -68,19 +40,49 @@ public:
 //     ???
 // Exception safety guarantee:
 //     ???
+// exception nuetral
 template<typename FDIter>
 void treesort(FDIter first, FDIter last)
 {
     // ValType is the type that FDIter points to
     using ValType = typename std::iterator_traits<FDIter>::value_type;
 
-    // THE FOLLOWING IS DUMMY CODE. IT WILL PASS ALL TESTS, BUT IT DOES
-    // NOT MEET THE REQUIREMENTS OF THE PROJECT.
-    std::vector<ValType> buff(std::distance(first, last));
-    std::move(first, last, buff.begin());
-    std::stable_sort(buff.begin(), buff.end());
-    std::move(buff.begin(), buff.end(), first);
+	std::unique_ptr<BSTNode<ValType>> head = nullptr;
+
+	for(FDIter it = first; it != last; ++it)
+	{
+		insert(head, *it);
+	}
+
+	inorder(head, first);
+}
+template<typename ValType, typename FDIter>
+void inorder(std::unique_ptr<BSTNode<ValType>>& node, FDIter &loc)
+{
+	if (node != nullptr)
+	{
+		inorder(node->_left, loc);
+		*loc++ = node->_key;
+		inorder(node->_right, loc);
+	}
+	
+}
+
+template<typename ValType>
+void insert(std::unique_ptr<BSTNode<ValType>>& node, const ValType& key)
+{
+	if (!node)
+	{
+		node = std::make_unique<BSTNode<ValType>>(key);
+	}
+	else if(key < node->_key)
+	{
+		insert(node->_left, key);
+	}
+	else
+	{
+		insert(node->_right, key);
+	}
 }
 
 #endif //#ifndef FILE_TREESORT_H_INCLUDED
-
