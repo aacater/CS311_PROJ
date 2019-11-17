@@ -34,12 +34,12 @@ struct BSTNode
 // treesort
 // Sort a given range using Treesort.
 // Pre:
-//     ???
+//     Size of the array is not zero (first != last).
 // Requirements on Types:
-//     ???
+//     None.
 // Exception safety guarantee:
-//     ???
-// exception nuetral
+//     Basic Guarantee.
+// exception neutral
 template<typename FDIter>
 void treesort(FDIter first, FDIter last)
 {
@@ -57,14 +57,14 @@ void treesort(FDIter first, FDIter last)
 }
 
 // inorder
-// DEF HERE
+// Inorder traversal of tree key-values: gives items in sorted order.
 // Pre:
-//     ???
+//     Size of the array is not zero (first != last).
 // Requirements on Types:
-//     ???
+//     None.
 // Exception safety guarantee:
-//     ???
-// exception ????
+//     Strong Guarantee.
+// exception neutral
 template<typename ValType, typename FDIter>
 void inorder(std::unique_ptr<BSTNode<ValType>>& node, FDIter &loc)
 {
@@ -78,14 +78,14 @@ void inorder(std::unique_ptr<BSTNode<ValType>>& node, FDIter &loc)
 }
 
 // insert
-// DEF HERE
+// Inserts a key into a node.
 // Pre:
-//     ???
+//     None.
 // Requirements on Types:
-//     ???
+//     None.
 // Exception safety guarantee:
-//     ???
-// exception ????
+//     Basic Guarantee.
+// exception neutral
 template<typename ValType>
 void insert(std::unique_ptr<BSTNode<ValType>>& node, const ValType& key)
 {
