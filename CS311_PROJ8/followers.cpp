@@ -18,18 +18,10 @@ void sortList(MapType& list)
 
 void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, std::string& previousword, int& counter)
 {
-	if (previousword.empty())
-	{
-		previousword = currentword;
-		return;
-	}
-
-	MapType::iterator itr = list.find(previousword);
-	if (itr == list.end())
+	if (list.find(previousword) == list.end())
 	{
 		list.insert(MapType::value_type(previousword, ValType()));
 		list[previousword].push_back(currentword);
-		counter++;
 	}
 	else
 	{
@@ -43,28 +35,14 @@ void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, 
 	return;
 }
 
-int main()
+MapType makeSet(std::ifstream& myfile)
 {
-	std::string filename;
-
-	std::cout << "Enter a filename: ";
-	std::getline(std::cin, filename);
-	
-	std::ifstream myfile;
-	myfile.open(filename);
-
-	if (!myfile)
-	{
-		std::cout << "Unable to open file \"" << filename << "\"" << std::endl;
-		return -1;
-	}
-
+	MapType list;
 	std::string currentword = "";
 	std::string previousword = "";
 	int counter = 0;
-	
-	MapType list;
 
+	myfile >> previousword;
 	while (!myfile.eof())
 	{
 		myfile >> currentword;
@@ -74,8 +52,26 @@ int main()
 	insertWord(myfile, list, temp, currentword, counter);
 	sortList(list);
 
-	std::cout << "Number of distinct words: " << counter << std::endl << std::endl;
+	return list;
+}
 
+int main()
+{
+	std::string filename;
+	std::cout << "Enter a filename: ";
+	std::getline(std::cin, filename);
+	
+	std::ifstream myfile;
+	myfile.open(filename);
+	if (!myfile)
+	{
+		std::cout << "Unable to open file \"" << filename << "\"" << std::endl;
+		return -1;
+	}
+
+	MapType list = makeSet(myfile);
+
+	std::cout << "Number of distinct words: " << list.size() << std::endl << std::endl;
 	for (auto n : list)
 	{
 		std::cout << n.first << " : ";
