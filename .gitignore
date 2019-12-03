@@ -345,3 +345,7 @@ ASALocalRun/
 /CS311_PROJ6/dp6_test_main.cpp
 /CS311_PROJ6/CS311_PROJ6.vcxproj.filters
 /CS311_PROJ6/catch.hpp
+/CS311_PROJ7/CS311_PROJ7.vcxproj.filters
+*.filters
+/CS311_PROJ8/cuber_test_main.cpp
+/CS311_PROJ8/catch.hpp

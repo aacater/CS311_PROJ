@@ -50,30 +50,69 @@ TEST_CASE("Cubber: Input types")
 
 }
 
+#define COUNT 5
 TEST_CASE("Cuber: Calculating Answers")
 {
 	Cuber cc;
 	SECTION("positive numbers")
 	{
-		INFO("Answers for both small and large positive numbers should be correct")
+		INFO("Answers for both small and large positive numbers should be correct");
+		int test_ints[] = { 2, 3, 4, 99, 1000 };
+		for (int i = 0; i < COUNT; ++i)
 		{
-			int arg = -5;
-			int result = pow(arg,3);
-			INFO(arg << " cubed is " << result);
-			REQUIRE(cc(arg) == result);
+			double result = pow(test_ints[i], 3);
+			INFO(test_ints[i] << " cubed is " << result);
+			REQUIRE(cc(test_ints[i]) == result);
 		}
+		double test_doubles[] = { 0.1, 4.9, 99.999, 2, 100000 };
+		for (int i = 0; i < COUNT; ++i)
 		{
-			INFO("1.1 cubed is 1.331");
-			REQUIRE(cc(1.1) == Approx(1.331));
+			double result = pow(test_doubles[i], 3);
+			INFO(test_doubles[i] << " cubed is " << result);
+			REQUIRE(cc(test_doubles[i]) == Approx(result));
 		}
-			REQUIRE(cc(2) == pow(2, 3));
 	}
 	SECTION("negative numbers")
 	{
-
+		INFO("Answers for both small and large negative numbers should be correct");
+		int test_ints[] = { -2, -3, -4, -99, -1000 };
+		for (int i = 0; i < COUNT; ++i)
+		{
+			double result = pow(test_ints[i], 3);
+			INFO(test_ints[i] << " cubed is " << result);
+			REQUIRE(cc(test_ints[i]) == result);
+		}
+		double test_doubles[] = { -0.1, -4.9, -99.999, -2, -100000 };
+		for (int i = 0; i < COUNT; ++i)
+		{
+			double result = pow(test_doubles[i], 3);
+			INFO(test_doubles[i] << " cubed is " << result);
+			REQUIRE(cc(test_doubles[i]) == Approx(result));
+		}
 	}
 	SECTION("special cases (0, 1, -1)")
 	{
-
+		int test_ints[] = { 0, 1, -1 };
+		for (int i = 0; i < 3; ++i)
+		{
+			double result = pow(test_ints[i], 3);
+			INFO(test_ints[i] << " cubed is " << result);
+			REQUIRE(cc(test_ints[i]) == result);
+		}
+	}
+	SECTION("chars")
+	{
+		double result = pow('A', 3);
+		INFO('A' << " cubed is " << result);
+		REQUIRE(cc('A') == Approx(result));
+		/*
+				char test_ints[] = { 'A', 'a', ' ', '0', '!' };
+		for (int i = 0; i < 3; ++i)
+		{
+			double result = pow(test_ints[i], 3);
+			INFO(test_ints[i] << " cubed is " << result);
+			REQUIRE(cc(test_ints[i]) == Approx(result));
+		}
+		*/
 	}
 }
