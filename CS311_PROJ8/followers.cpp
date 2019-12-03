@@ -8,6 +8,20 @@
 typedef std::vector<std::string> ValType;
 typedef std::map<std::string, ValType> MapType;
 
+void printList(const MapType& list)
+{
+	std::cout << "Number of distinct words: " << list.size() << std::endl << std::endl;
+	for (auto n : list)
+	{
+		std::cout << n.first << " : ";
+		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
+		{
+			std::cout << *itr << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
 void sortList(MapType& list)
 {
 	for (auto &n : list)
@@ -16,7 +30,7 @@ void sortList(MapType& list)
 	}
 }
 
-void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, std::string& previousword, int& counter)
+void insertWord(MapType& list, const std::string& currentword, std::string& previousword)
 {
 	if (list.find(previousword) == list.end())
 	{
@@ -35,21 +49,20 @@ void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, 
 	return;
 }
 
-MapType makeSet(std::ifstream& myfile)
+MapType makeList(std::ifstream& myfile)
 {
 	MapType list;
 	std::string currentword = "";
 	std::string previousword = "";
-	int counter = 0;
 
 	myfile >> previousword;
 	while (!myfile.eof())
 	{
 		myfile >> currentword;
-		insertWord(myfile, list, currentword, previousword, counter);
+		insertWord(list, currentword, previousword);
 	}
 	std::string temp = "";
-	insertWord(myfile, list, temp, currentword, counter);
+	insertWord(list, temp, currentword);
 	sortList(list);
 
 	return list;
@@ -69,18 +82,9 @@ int main()
 		return -1;
 	}
 
-	MapType list = makeSet(myfile);
+	MapType list = makeList(myfile);
 
-	std::cout << "Number of distinct words: " << list.size() << std::endl << std::endl;
-	for (auto n : list)
-	{
-		std::cout << n.first << " : ";
-		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
-		{
-			std::cout << *itr << " ";
-		}
-		std::cout << std::endl;
-	}
+	printList(list);
 
 	myfile.close();
 
