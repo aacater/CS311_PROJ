@@ -1,38 +1,29 @@
-// followers.h
+// followers.cpp
 // Alex Cater, Kurt Nunn, Christopher Seamount
 // 2019-12-03
-//
-// For CS 311 Fall 2019
-// Source File for Project 8, Exercise A
+// CS 311 Fall 2019
+// Header for C++ STL table implementation
+// There is no associated source file.
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <map>
-#include <sstream>
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<vector>
+#include<algorithm>
+#include<map>
 
 typedef std::vector<std::string> ValType;
 typedef std::map<std::string, ValType> MapType;
 
-// prints stats about list
-//		number of distinct words and key + values
-void printList(const MapType& list)
-{
-	std::cout << "Number of distinct words: " << list.size() << std::endl << std::endl;
-	for (auto n : list)
-	{
-		std::cout << n.first << " : ";
-		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
-		{
-			std::cout << *itr << " ";
-		}
-		std::cout << std::endl;
-	}
-}
-
-// sorts values for each key
+// sortList
+// Sorts a given list of words in lexicographical order
+// Pre:
+//     The words contain characters that can be compared according to lexicographical order.
+// Requirements on Types:
+//     None.
+// Exception safety guarantee:
+//     Basic Guarantee.
+// exception neutral
 void sortList(MapType& list)
 {
 	for (auto &n : list)
@@ -41,13 +32,29 @@ void sortList(MapType& list)
 	}
 }
 
-// inserts a word into list based on the word it followed
-void insertWord(MapType& list, const std::string& currentword, std::string& previousword)
+// insertWord
+// Inserts the specified word into the list.
+// Pre:
+//     None.
+// Requirements on Types:
+//     None.
+// Exception safety guarantee:
+//     Basic Guarantee.
+// exception neutral
+void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, std::string& previousword, int& counter)
 {
-	if (list.find(previousword) == list.end())
+	if (previousword.empty())
+	{
+		previousword = currentword;
+		return;
+	}
+
+	MapType::iterator itr = list.find(previousword);
+	if (itr == list.end())
 	{
 		list.insert(MapType::value_type(previousword, ValType()));
 		list[previousword].push_back(currentword);
+		counter++;
 	}
 	else
 	{
@@ -61,64 +68,59 @@ void insertWord(MapType& list, const std::string& currentword, std::string& prev
 	return;
 }
 
-// read a file and properly create list
-MapType makeList(std::ifstream& myfile)
-{
-	MapType list;
-	std::string currentword = "";
-	std::string previousword = "";
-
-	myfile >> previousword;
-	while (myfile)
-	{
-		if (myfile.eof())
-		{
-			break;
-		}
-		myfile >> currentword;
-		insertWord(list, currentword, previousword);
-	}
-	std::string temp = "";
-	insertWord(list, temp, currentword);
-	sortList(list);
-
-	return list;
-}
-
-// userPause
-// Wait for user to press ENTER: read all chars through first newline.
-void userPause()
-{
-	std::cout.flush();
-	while (std::cin.get() != '\n');
-}
-
-// Main of file
-// opens and creates list of followers from contents
+// main
+// Inputs a filename from the user and reads the named file.
+// Pre:
+//     The file with the specified name exists within the current directory.
+// Requirements on Types:
+//     None.
+// Exception safety guarantee:
+//     Basic Guarantee.
+// exception neutral
 int main()
 {
 	std::string filename;
+
 	std::cout << "Enter a filename: ";
 	std::getline(std::cin, filename);
+	
 	std::ifstream myfile;
 	myfile.open(filename);
+
 	if (!myfile)
 	{
 		std::cout << "Unable to open file \"" << filename << "\"" << std::endl;
-		std::cout << "Press ENTER to quit ";
-		userPause();
 		return -1;
 	}
 
-	MapType list = makeList(myfile);
+	std::string currentword = "";
+	std::string previousword = "";
+	int counter = 0;
+	
+	MapType list;
 
-	printList(list);
+	while (!myfile.eof())
+	{
+		myfile >> currentword;
+		insertWord(myfile, list, currentword, previousword, counter);
+	}
+	std::string temp = "";
+	insertWord(myfile, list, temp, currentword, counter);
+	sortList(list);
+
+	std::cout << "Number of distinct words: " << counter << std::endl << std::endl;
+
+	for (auto n : list)
+	{
+		std::cout << n.first << " : ";
+		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
+		{
+			std::cout << *itr << " ";
+		}
+		std::cout << std::endl;
+	}
 
 	myfile.close();
-
-	// Wait for user
-	std::cout << "Press ENTER to quit ";
-	userPause();
 
 	return 0;
 }
