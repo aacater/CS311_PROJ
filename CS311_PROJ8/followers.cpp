@@ -5,19 +5,25 @@
 // Header for C++ STL table implementation
 // There is no associated source file.
 
+// for std::cin, std::cout, std::endl
 #include<iostream>
+// for std::ifstream
 #include<fstream>
+// for std::string
 #include<string>
+// for std::vector
 #include<vector>
+// for std::sort
 #include<algorithm>
+// for std::map
 #include<map>
 
 typedef std::vector<std::string> ValType;
 typedef std::map<std::string, ValType> MapType;
 
 
-// printList
-// Prints list of words and all words that directly follow
+// printTable
+// Prints table of words and all words that directly follow
 // Pre:
 //     None
 // Requirements on Types:
@@ -25,10 +31,10 @@ typedef std::map<std::string, ValType> MapType;
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
-void printList(const MapType& list)
+void printTable(const MapType& table)
 {
-	std::cout << "Number of distinct words: " << list.size() << std::endl << std::endl;
-	for (auto n : list)
+	std::cout << "Number of distinct words: " << table.size() << std::endl << std::endl;
+	for (auto n : table)
 	{
 		std::cout << n.first << " : ";
 		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
@@ -39,8 +45,8 @@ void printList(const MapType& list)
 	}
 }
 
-// sortList
-// Sorts a given list of words in lexicographical order
+// sortTable
+// Sorts a given table of words in lexicographical order
 // Pre:
 //     The words contain characters that can be compared according to lexicographical order.
 // Requirements on Types:
@@ -48,16 +54,16 @@ void printList(const MapType& list)
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
-void sortList(MapType& list)
+void sortTable(MapType& table)
 {
-	for (auto& n : list)
+	for (auto& n : table)
 	{
 		std::sort(n.second.begin(), n.second.end());
 	}
 }
 
 // insertWord
-// Inserts the specified word into the list.
+// Inserts the specified word into the table and unique words that immediatly follow
 // Pre:
 //     None.
 // Requirements on Types:
@@ -65,18 +71,18 @@ void sortList(MapType& list)
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
-void insertWord(MapType& list, const std::string& currentword, std::string& previousword)
+void insertWord(MapType& table, const std::string& currentword, std::string& previousword)
 {
-	if (list.find(previousword) == list.end())
+	if (table.find(previousword) == table.end())
 	{
-		list.insert(MapType::value_type(previousword, ValType()));
-		list[previousword].push_back(currentword);
+		table.insert(MapType::value_type(previousword, ValType()));
+		table[previousword].push_back(currentword);
 	}
 	else
 	{
-		if (std::find(list[previousword].begin(), list[previousword].end(), currentword) == list[previousword].end())
+		if (std::find(table[previousword].begin(), table[previousword].end(), currentword) == table[previousword].end())
 		{
-			list[previousword].push_back(currentword);
+			table[previousword].push_back(currentword);
 		}
 	}
 
@@ -84,8 +90,8 @@ void insertWord(MapType& list, const std::string& currentword, std::string& prev
 	return;
 }
 
-// makeList
-// creates map of words and then calls a function to sort
+// makeTable
+// creates table of unique words and words that directly follow
 // Pre:
 //     must check if file was opened correctly before passing into this function
 // Requirements on Types:
@@ -93,9 +99,9 @@ void insertWord(MapType& list, const std::string& currentword, std::string& prev
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
-MapType makeList(std::ifstream& myfile)
+MapType makeTable(std::ifstream& myfile)
 {
-	MapType list;
+	MapType table;
 	std::string currentword = "";
 	std::string previousword = "";
 
@@ -103,13 +109,13 @@ MapType makeList(std::ifstream& myfile)
 	while (!myfile.eof())
 	{
 		myfile >> currentword;
-		insertWord(list, currentword, previousword);
+		insertWord(table, currentword, previousword);
 	}
 	std::string temp = "";
-	insertWord(list, temp, currentword);
-	sortList(list);
+	insertWord(table, temp, currentword);
+	sortTable(table);
 
-	return list;
+	return table;
 }
 
 // main
@@ -135,9 +141,9 @@ int main()
 		return -1;
 	}
 
-	MapType list = makeList(myfile);
+	MapType table = makeTable(myfile);
 
-	printList(list);
+	printTable(table);
 
 	myfile.close();
 
