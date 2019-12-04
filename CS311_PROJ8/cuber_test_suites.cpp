@@ -107,12 +107,12 @@ TEST_CASE("Cuber: Chars")
 {
 	const Cuber cc;
 	{
-		char result = (char)pow('A', 3);
+		char result = pow('A', 3);
 		INFO('A' << " cubed is " << result);
 		REQUIRE(cc('A') == result);
 	}
 	{
-		char result = (char)pow('q', 3);
+		char result = pow('q', 3);
 		INFO('q' << " cubed is " << result);
 		REQUIRE(cc('q') == result);
 	}
