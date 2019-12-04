@@ -26,8 +26,6 @@ typedef std::map<std::string, ValType> MapType;
 // Prints table of words and all words that directly follow
 // Pre:
 //     None
-// Requirements on Types:
-//     Must pass type: map<string,vector<string>>
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
@@ -49,8 +47,6 @@ void printTable(const MapType& table)
 // Sorts a given table of words in lexicographical order
 // Pre:
 //     The words contain characters that can be compared according to lexicographical order.
-// Requirements on Types:
-//     Must pass type: map<string,vector<string>>
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
@@ -66,8 +62,6 @@ void sortTable(MapType& table)
 // Inserts the specified word into the table and unique words that immediatly follow
 // Pre:
 //     None.
-// Requirements on Types:
-//     Must pass type: map<string,vector<string>>, ands two strings
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
@@ -94,8 +88,6 @@ void insertWord(MapType& table, const std::string& currentword, std::string& pre
 // creates table of unique words and words that directly follow
 // Pre:
 //     must check if file was opened correctly before passing into this function
-// Requirements on Types:
-//     must pass an ifstream
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
@@ -122,8 +114,6 @@ MapType makeTable(std::ifstream& myfile)
 // Inputs a filename from the user and reads the named file.
 // Pre:
 //     The file with the specified name exists within the current directory.
-// Requirements on Types:
-//     None.
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
