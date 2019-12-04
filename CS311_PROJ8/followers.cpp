@@ -2,8 +2,7 @@
 // Alex Cater, Kurt Nunn, Christopher Seamount
 // 2019-12-03
 // CS 311 Fall 2019
-// Header for C++ STL table implementation
-// There is no associated source file.
+// Source File for C++ STL table implementation
 
 // for std::cin, std::cout, std::endl
 #include<iostream>
@@ -20,7 +19,6 @@
 
 typedef std::vector<std::string> ValType;
 typedef std::map<std::string, ValType> MapType;
-
 
 // printTable
 // Prints table of words and all words that directly follow
@@ -110,6 +108,19 @@ MapType makeTable(std::ifstream& myfile)
 	return table;
 }
 
+// userPause
+// Wait for user to press ENTER: read all chars through first newline.
+// Pre:
+//	   None
+// Exception safety guarantee:
+//     Strong Guarantee.
+// exception neutral
+void userPause()
+{
+	std::cout.flush();
+	while (std::cin.get() != '\n');
+}
+
 // main
 // Inputs a filename from the user and reads the named file.
 // Pre:
@@ -128,6 +139,8 @@ int main()
 	if (!myfile)
 	{
 		std::cout << "Unable to open file \"" << filename << "\"" << std::endl;
+		std::cout << "Press ENTER to quit ";
+		userPause();
 		return -1;
 	}
 
@@ -136,6 +149,10 @@ int main()
 	printTable(table);
 
 	myfile.close();
+
+	// Wait for user
+	std::cout << "Press ENTER to quit ";
+	userPause();
 
 	return 0;
 }

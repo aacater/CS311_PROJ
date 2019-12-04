@@ -40,7 +40,7 @@ TEST_CASE("Cubber: Input types")
 		cc(cn_int);
 		double cn_doub = 0.9;
 		cc(cn_doub);
-		char c_char = 'b';
+		char c_char = 'A';
 		cc(c_char);
 		{
 		INFO("Program failed to compile")
