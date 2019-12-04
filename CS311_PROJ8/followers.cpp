@@ -15,18 +15,42 @@
 typedef std::vector<std::string> ValType;
 typedef std::map<std::string, ValType> MapType;
 
+
+// printList
+// Prints list of words and all words that directly follow
+// Pre:
+//     None
+// Requirements on Types:
+//     Must pass type: map<string,vector<string>>
+// Exception safety guarantee:
+//     Basic Guarantee.
+// exception neutral
+void printList(const MapType& list)
+{
+	std::cout << "Number of distinct words: " << list.size() << std::endl << std::endl;
+	for (auto n : list)
+	{
+		std::cout << n.first << " : ";
+		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
+		{
+			std::cout << *itr << " ";
+		}
+		std::cout << std::endl;
+	}
+}
+
 // sortList
 // Sorts a given list of words in lexicographical order
 // Pre:
 //     The words contain characters that can be compared according to lexicographical order.
 // Requirements on Types:
-//     None.
+//     Must pass type: map<string,vector<string>>
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
 void sortList(MapType& list)
 {
-	for (auto &n : list)
+	for (auto& n : list)
 	{
 		std::sort(n.second.begin(), n.second.end());
 	}
@@ -37,24 +61,16 @@ void sortList(MapType& list)
 // Pre:
 //     None.
 // Requirements on Types:
-//     None.
+//     Must pass type: map<string,vector<string>>, ands two strings
 // Exception safety guarantee:
 //     Basic Guarantee.
 // exception neutral
-void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, std::string& previousword, int& counter)
+void insertWord(MapType& list, const std::string& currentword, std::string& previousword)
 {
-	if (previousword.empty())
-	{
-		previousword = currentword;
-		return;
-	}
-
-	MapType::iterator itr = list.find(previousword);
-	if (itr == list.end())
+	if (list.find(previousword) == list.end())
 	{
 		list.insert(MapType::value_type(previousword, ValType()));
 		list[previousword].push_back(currentword);
-		counter++;
 	}
 	else
 	{
@@ -66,6 +82,34 @@ void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, 
 
 	previousword = currentword;
 	return;
+}
+
+// makeList
+// creates map of words and then calls a function to sort
+// Pre:
+//     must check if file was opened correctly before passing into this function
+// Requirements on Types:
+//     must pass an ifstream
+// Exception safety guarantee:
+//     Basic Guarantee.
+// exception neutral
+MapType makeList(std::ifstream& myfile)
+{
+	MapType list;
+	std::string currentword = "";
+	std::string previousword = "";
+
+	myfile >> previousword;
+	while (!myfile.eof())
+	{
+		myfile >> currentword;
+		insertWord(list, currentword, previousword);
+	}
+	std::string temp = "";
+	insertWord(list, temp, currentword);
+	sortList(list);
+
+	return list;
 }
 
 // main
@@ -80,45 +124,20 @@ void insertWord(std::ifstream& myfile, MapType& list, std::string& currentword, 
 int main()
 {
 	std::string filename;
-
 	std::cout << "Enter a filename: ";
 	std::getline(std::cin, filename);
-	
+
 	std::ifstream myfile;
 	myfile.open(filename);
-
 	if (!myfile)
 	{
 		std::cout << "Unable to open file \"" << filename << "\"" << std::endl;
 		return -1;
 	}
 
-	std::string currentword = "";
-	std::string previousword = "";
-	int counter = 0;
-	
-	MapType list;
+	MapType list = makeList(myfile);
 
-	while (!myfile.eof())
-	{
-		myfile >> currentword;
-		insertWord(myfile, list, currentword, previousword, counter);
-	}
-	std::string temp = "";
-	insertWord(myfile, list, temp, currentword, counter);
-	sortList(list);
-
-	std::cout << "Number of distinct words: " << counter << std::endl << std::endl;
-
-	for (auto n : list)
-	{
-		std::cout << n.first << " : ";
-		for (auto itr = n.second.begin(); itr != n.second.end(); ++itr)
-		{
-			std::cout << *itr << " ";
-		}
-		std::cout << std::endl;
-	}
+	printList(list);
 
 	myfile.close();
 
