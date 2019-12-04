@@ -100,19 +100,20 @@ TEST_CASE("Cuber: Calculating Answers")
 			REQUIRE(cc(test_ints[i]) == result);
 		}
 	}
-	SECTION("chars")
+	
+}
+
+TEST_CASE("Cuber: Chars")
+{
+	const Cuber cc;
 	{
-		double result = pow('A', 3);
+		char result = (char)pow('A', 3);
 		INFO('A' << " cubed is " << result);
-		REQUIRE(cc('A') == Approx(result));
-		/*
-				char test_ints[] = { 'A', 'a', ' ', '0', '!' };
-		for (int i = 0; i < 3; ++i)
-		{
-			double result = pow(test_ints[i], 3);
-			INFO(test_ints[i] << " cubed is " << result);
-			REQUIRE(cc(test_ints[i]) == Approx(result));
-		}
-		*/
+		REQUIRE(cc('A') == result);
+	}
+	{
+		char result = (char)pow('q', 3);
+		INFO('q' << " cubed is " << result);
+		REQUIRE(cc('q') == result);
 	}
 }
